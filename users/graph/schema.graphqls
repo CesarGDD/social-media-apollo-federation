@@ -1,0 +1,68 @@
+scalar Time
+
+# User Scheme
+type User @key(fields: "id") {
+  id: Int!
+  createdAt: Time!
+  updatedAt: Time!
+  username: String!
+  bio: String
+  avatar: String
+  email: String
+  password: String!
+}
+
+extend type Post @key(fields: "user_id"){
+  user_id: Int! @external
+  user: User!
+}
+
+extend type Comment @key(fields: "user_id"){
+  user_id: Int! @external
+  user: User!
+}
+
+extend type PostLike @key(fields: "user_id"){
+  user_id: Int! @external
+  user: User!
+}
+
+extend type CommentLike @key(fields: "user_id"){
+  user_id: Int! @external
+  user: User!
+}
+
+extend type Follower @key(fields: "follower_id"){
+  follower_id: Int! @external
+  user: User!
+}
+
+input NewUser {
+  username: String!
+  bio: String
+  avatar: String
+  email: String
+  password: String!
+}
+
+input EditUser {
+  id: Int!
+  bio: String
+  avatar: String
+}
+
+extend type Query {
+  # Users
+  userByUsername(username: String!): User! 
+  userById(id: Int!): User! 
+  users: [User!]!
+}
+
+# Mutations
+extend type Mutation {
+  # Users
+  createUser(input: NewUser):User!
+  updateUser(input: EditUser):User!
+  deleteUser(input: Int):User
+
+}

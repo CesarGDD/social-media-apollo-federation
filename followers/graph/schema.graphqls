@@ -1,0 +1,34 @@
+scalar Time
+
+# Followers Schema
+type Follower @key(fields: "id") @key(fields: "leader_id") @key(fields: "follower_id") {
+  id: Int!
+  createdAt: Time!
+  leader_id: Int!
+  follower_id: Int!
+}
+
+extend type User @key(fields: "id") {
+  id: Int! @external
+  followers: [Follower!]!
+}
+
+input NewFollower {
+  leader_id: Int!
+  follower_id: Int!
+}
+
+# Querys
+
+extend type Query {
+  # Followers
+  follower(id: Int!): Follower!
+  followers:[Follower!]!
+}
+
+# Mutations
+extend type Mutation {
+  # Followers
+  createFollower(input: NewFollower): Follower!
+  deleteFollower(input: Int): Follower
+}

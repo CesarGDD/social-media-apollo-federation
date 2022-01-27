@@ -1,0 +1,61 @@
+scalar Time
+
+# Hashtag Schema
+type Hashtag @key(fields: "id") {
+  id: Int!
+  createdAt: Time!
+  title: String!
+}
+
+extend type Post @key(fields: "id"){
+  id: Int! @external
+  hashtags: [HashtagPost!]!
+}
+
+
+input NewHashtag {
+  title: String!
+}
+
+input EditHashtag {
+  id: Int!
+  title: String!
+}
+
+# HashtagPost
+
+type HashtagPost @key(fields: "id") @key(fields: "post_id") {
+  id: Int!
+  hashtag_id: Int!
+  post_id: Int!
+  hashtag: Hashtag!
+}
+
+input NewHashtagPost {
+  hashtag_id: Int!
+  post_id: Int!
+}
+
+# Querys
+
+extend type Query {
+  # Hashtag
+  hashtagByTitle(title: String!): Hashtag!
+  hashtagsById(id: Int!): Hashtag!
+  hashtags: [Hashtag!]!
+
+  #HashtagPost
+  hashtagPost(id: Int!): HashtagPost!
+  hashtagsPost: [HashtagPost!]!
+}
+
+# Mutations
+extend type Mutation {
+  # Hashtag
+  createHashtag(input: NewHashtag): Hashtag!
+  updateHashtag(input: EditHashtag): Hashtag!
+  deleteHashtag(input: Int): Hashtag
+  # HashtagPost
+  createHashtagPost(input: NewHashtagPost): HashtagPost!
+  deleteHashtagPost(input: Int): HashtagPost
+}

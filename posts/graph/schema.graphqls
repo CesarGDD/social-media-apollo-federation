@@ -1,0 +1,58 @@
+scalar Time
+
+# Post Schema
+
+type Post @key(fields: "user_id") @key(fields: "id") {
+  id: Int!
+  createdAt: Time!
+  updatedAt: Time!
+  url: String!
+  caption: String
+  user_id: Int!
+}
+
+extend type User @key(fields: "id") {
+  id: Int! @external
+  posts: [Post!]!
+}
+
+extend type Comment @key(fields: "post_id") {
+  post_id: Int! @external
+}
+
+extend type PostLike @key(fields: "post_id") {
+  post_id: Int! @external
+}
+
+extend type HashtagPost @key(fields: "post_id") {
+  post_id: Int! @external
+  posts: [Post!]!
+}
+
+
+input NewPost {
+  url: String!
+  caption: String
+  userId: Int!
+}
+
+input EditPost {
+  id: Int!
+  url: String
+  caption: String
+}
+
+
+extend type Query {
+  # Posts
+  post(id: Int!): Post!
+  posts: [Post!]!
+}
+
+# Mutations
+extend type Mutation {
+  # Posts
+  createPost(input:NewPost):Post!
+  updatePost(input:EditPost):Post!
+  deletePost(input: Int):Post
+}

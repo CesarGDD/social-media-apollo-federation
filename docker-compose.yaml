@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  pgadmin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: user@domain.com
+        PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      ports:
+        - "80:80"
+  postgres:
+    image: 'postgres'
+    platform: linux/arm64
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+  users:
+    build: ./users
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - postgres
+  posts:
+    build: ./posts
+    ports:
+      - "8081:8081"
+    depends_on: 
+      - postgres
+  comments:
+    build: ./comments
+    ports:
+      - "8082:8082"
+    depends_on: 
+      - postgres
+  likes:
+    build: ./likes
+    ports:
+      - "8083:8083"
+    depends_on: 
+      - postgres
+  hashtag:
+    build: ./hashtag
+    ports:
+      - "8084:8084"
+    depends_on: 
+      - postgres
+  followers:
+    build: ./followers
+    ports:
+      - "8085:8085"
+    depends_on: 
+      - postgres
+  gateway:
+    build: ./gateway
+    ports:
+      - "4000:4000"
+    depends_on:
+      - "users"
+      - "posts"
+      - "comments"
+      - "likes"
+      - "hashtag"
+      - "followers"
+    restart: always
+volumes: 
+  data:

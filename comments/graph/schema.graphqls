@@ -1,0 +1,47 @@
+scalar Time
+
+# Comments Schema
+type Comment @key(fields: "post_id") @key(fields: "user_id") @key(fields: "id") {
+  id: Int!
+  createdAt: Time!
+  updatedAt: Time!
+  contents: String!
+  user_id: Int!
+  post_id: Int!
+}
+
+extend type Post @key(fields: "id") {
+  id: Int! @external
+  comments: [Comment!]!
+}
+
+extend type CommentLike @key(fields: "comment_id") {
+  comment_id: Int! @external
+}
+
+input NewComment {
+  contents: String!
+  user_id: Int!
+  post_id: Int!
+}
+
+input EditComment {
+  id: Int!
+  contents: String!
+}
+
+# Querys
+
+extend type Query {
+  # Comments
+  comment(id: Int!): Comment!
+  comments: [Comment!]!
+}
+
+# Mutations
+extend type Mutation {
+  # Comments
+  createComment(input: NewComment): Comment!
+  updateComment(input: EditComment): Comment!
+  deleteComment(input: Int): Comment
+}

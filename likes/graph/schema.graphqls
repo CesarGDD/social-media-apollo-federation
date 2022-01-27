@@ -1,0 +1,60 @@
+scalar Time
+
+# PostLikes Schema
+type PostLike @key(fields: "user_id") @key(fields: "post_id") {
+  id: Int!
+  createdAt: Time!
+  user_id: Int!
+  post_id: Int!
+}
+
+extend type Post @key(fields: "id") {
+  id: Int! @external
+  postLikes: [PostLike!]!
+}
+
+extend type Comment @key(fields: "id") {
+  id: Int! @external
+  commentLikes: [CommentLike!]!
+}
+
+input NewPostLike {
+  user_id: Int!
+  post_id: Int!
+}
+
+# CommentLikes Schema
+type CommentLike @key(fields: "user_id") @key(fields: "comment_id") {
+  id: Int!
+  createdAt: Time!
+  user_id: Int!
+  comment_id: Int!
+}
+
+input NewCommentLike {
+  user_id: Int!
+  comment_id: Int!
+}
+
+
+# Querys
+
+extend type Query {
+  # PostLikes
+  postLike(id: Int!): PostLike!
+  postLikes: [PostLike!]!
+  # CommentLikes
+  commentLike(id: Int!): CommentLike!
+  commentLikes: [CommentLike!]!
+}
+
+# Mutations
+extend type Mutation {
+  # PostLikes
+  createPostLike(input: NewPostLike): PostLike!
+  deletePostLike(input: Int): PostLike
+  
+  # CommentLikes
+  createCommentLike(input: NewCommentLike): CommentLike!
+  deleteCommentLike(input: Int): CommentLike
+}
